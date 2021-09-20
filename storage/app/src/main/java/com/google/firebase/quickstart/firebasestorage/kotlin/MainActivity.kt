@@ -36,6 +36,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private var fileUri: Uri? = null
 
     private lateinit var binding: ActivityMainBinding
+    
+    private val startForResult = registerForActivityResult(ActivityResultContracts.OpenDocument())
+        { fileUri -> 
+           if(fileUri != null){
+               uploadFromUri(fileUri)
+           } else {
+               Log.w(TAG, "File URI is null")
+           }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -155,18 +164,20 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    
     private fun launchCamera() {
         Log.d(TAG, "launchCamera")
 
         // Pick an image from storage
-        val intentLauncher = registerForActivityResult(ActivityResultContracts.OpenDocument()) { fileUri ->
-            if (fileUri != null) {
-                uploadFromUri(fileUri)
-            } else {
-                Log.w(TAG, "File URI is null")
-            }
-        }
-        intentLauncher.launch(arrayOf("image/*"))
+        //val intentLauncher = registerForActivityResult(ActivityResultContracts.OpenDocument()) { fileUri ->
+        //    if (fileUri != null) {
+        //        uploadFromUri(fileUri)
+        //    } else {
+        //        Log.w(TAG, "File URI is null")
+        //    }
+        //}
+        //intentLauncher.launch(arrayOf("image/*"))
+        startForResult.launch(arrayOf("image/*"))
     }
 
     private fun signInAnonymously() {
